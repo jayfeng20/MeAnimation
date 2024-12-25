@@ -1,25 +1,26 @@
 from ursina import *
 
-# Initialize the Ursina application
 app = Ursina()
-window.render_mode = "high"
-# Create the ground
-ground = Entity(
-    model="plane",
-    texture="white_cube",
-    color=color.azure,
-    scale=(10, 1, 10),
-    position=(0, 0, 0),
-)
+
+# Add a directional light
+DirectionalLight(parent=scene, y=2, z=-3, shadows=True)
+
+# Add ambient light to brighten shadowed areas
+AmbientLight(color=color.rgba(255, 255, 255, 0.3))
 
 # Create the player character
 player = Entity(
-    model="cube", color=color.orange, scale=(0.5, 0.5, 0.5), position=(0, 0.25, 0)
+    model="objects/chr_knight.vox.obj",
+    texture="objects/chr_knight.png",
+    color=color.orange,
+    scale=(0.5, 0.5, 0.5),
+    position=(0, 0.25, 0),
 )
 
 
 # Update function to control player movement
 def update():
+    player.rotation_y += 0.3
     # Move player based on key input
     if held_keys["w"]:  # Move forward
         player.position += Vec3(0, 0, 0.1)
@@ -35,15 +36,9 @@ def update():
     player.z = max(-4.5, min(4.5, player.z))
 
 
-# Add a camera
-camera.position = (0, 10, -15)
-camera.rotation_x = 30
-
-
-# 7. Use Higher-Quality Models
-# Ensure that your models (e.g., from MagicaVoxel) have sufficient detail for better visuals. Export them at a higher resolution and import them into your Ursina project.
-# Entity(model='my_voxel_model.obj', texture='texture.png')
-
+camera.orthographic = False
+camera.position = (0, 2, -5)  # Adjust for a better perspective
+camera.look_at(player)
 
 # Run the Ursina application
 app.run()
